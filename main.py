@@ -15,14 +15,22 @@ child_image = pygame.image.load('asset/sprites_splitted/child.png').convert_alph
 child_image = pygame.transform.scale(child_image, (CHILD_MEASURE, CHILD_MEASURE))
 # bg_surface = pygame.image.load('assets/background-day.png').convert()
 #rect for the position
+
 child_rect = child_image.get_rect(topleft = (120,464))
 while True:
+    location = 0
     clock.tick(FPS) # ensure the event only at FPS setting 
     for event in pygame.event.get(): # get list of event
         # if window close -> 'x' was clicked
         if event.type == pygame.QUIT: 
             pygame.quit() #quit 
             sys.exit() #exit
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT:
+                location -= 1
+            if event.key == pygame.K_RIGHT:
+                location += 1
+    child_rect.centerx += (location*CHILD_MEASURE)
         
     
     # Fill the background with white
