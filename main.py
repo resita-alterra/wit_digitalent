@@ -11,11 +11,14 @@ class BuahOrPoison():
 SCREEN = pygame.display.set_mode((288,512)) # screen size 
 pygame.display.set_caption("Yuk Makan Sehat") # set window title 
 clock = pygame.time.Clock() # used for fps setting
-game_font = pygame.font.SysFont("Arial", 36)
+game_font = pygame.font.Font("asset/font/emilys-candy/EmilysCandy-Regular.ttf", 36)
+bg_surface = pygame.image.load("asset/misc/greenPortraitBg.png").convert()
+bg_surface = pygame.transform.scale(bg_surface,(288,512))
 FPS = 120 # FPS
 START = False
 
-#menambah variabel batas atas
+# COLORS
+BLUE = (10, 231, 255)
 
 #menambah variabel kiri kanan
 CHILD_MEASURE = 48
@@ -34,17 +37,37 @@ def reset_game():
     SCORE = 0
     HEALTH = 3
 
-def score_display(topleft = (0,0),high = False):
+def score_display(start = True, high = False):
     score = HIGH_SCORE if high else SCORE
-    score_surface = game_font.render(str(int(score)),True,(0,0,0))
-    score_rect = score_surface.get_rect(topleft = topleft)
+    title = "High Score: " if high else "Score :"
+    to_render = title + str(int(score)) if not start else str(int(score))
+    score_surface = game_font.render(to_render,True,BLUE)
+    if not start:
+        if high:
+            score_rect = score_surface.get_rect(midbottom = (144,512))
+        else:
+            score_rect = score_surface.get_rect(midtop = (144,0))
+    else:
+        if high:
+            score_rect = score_surface.get_rect(topleft = (0,0))
+        else:
+            score_rect = score_surface.get_rect(midtop = (144,0))
+            
+
+    
+    # score_surface = game_font.render(str(int(score)),True,(0,0,0))
+    # score_rect = score_surface.get_rect(topleft = topleft)
     SCREEN.blit(score_surface,score_rect)
 def init_display():
-    init_surface = game_font.render("Hello, pencet spasi dong", True,(0,0,0))
-    init_rect = init_surface.get_rect(center = (144,256))
-    SCREEN.blit(init_surface,init_rect)
-    score_display()
-    score_display((144,0),True)
+    cloud_image = pygame.image.load("asset/misc/cloud.png").convert_alpha()
+    cloud_surface = pygame.transform.scale(cloud_image,(288,220))
+    cloud_rect = cloud_surface.get_rect(center = (144,256))
+    welcome_surface = game_font.render("Enter to Play",True,BLUE)
+    welcome_rect = welcome_surface.get_rect(center = (144,256))
+    SCREEN.blit(cloud_surface,cloud_rect)
+    SCREEN.blit(welcome_surface,welcome_rect)
+    score_display(start=False)
+    score_display(high=True, start=False)
     
 def health_display():
     health_surface = game_font.render(str(int(HEALTH)),True,(0,0,255))
@@ -101,7 +124,8 @@ posisi_buah = [-2,-1,0,1,2]
 
 
 while True:
-    SCREEN.fill((255, 255, 255))
+    SCREEN.blit(bg_surface,(0,0))
+
     if START:
         START = check_collision(buah_list)
         location = 0
@@ -130,7 +154,8 @@ while True:
         SCREEN.blit(child_image,child_rect)
         buah_list = move_buah(buah_list)
         draw_buah(buah_list)
-        score_display()
+        score_display(start= True, high=False)
+        score_display(start= True, high=True)
         health_display()
     else:
         if SCORE > HIGH_SCORE:
