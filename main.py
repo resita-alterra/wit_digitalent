@@ -23,18 +23,28 @@ SPAWNBUAH = pygame.USEREVENT + 1
 pygame.time.set_timer(SPAWNBUAH,500)
 buah_list=[]
 
+HIGH_SCORE = 0
 SCORE = 0
 HEALTH = 3
 
+def reset_game():
+    global SCORE
+    global HEALTH
+    SCORE = 0
+    HEALTH = 3
+
+def score_display(topleft = (0,0),high = False):
+    score = HIGH_SCORE if high else SCORE
+    score_surface = game_font.render(str(int(score)),True,(0,0,0))
+    score_rect = score_surface.get_rect(topleft = topleft)
+    SCREEN.blit(score_surface,score_rect)
 def init_display():
     init_surface = game_font.render("Hello, pencet spasi dong", True,(0,0,0))
     init_rect = init_surface.get_rect(center = (144,256))
     SCREEN.blit(init_surface,init_rect)
-
-def score_display():
-    score_surface = game_font.render(str(int(SCORE)),True,(0,0,0))
-    score_rect = score_surface.get_rect(topleft = (0,0))
-    SCREEN.blit(score_surface,score_rect)
+    score_display()
+    score_display((144,0),True)
+    
 def health_display():
     health_surface = game_font.render(str(int(HEALTH)),True,(0,0,255))
     health_rect = health_surface.get_rect(topright = (288,0))
@@ -68,7 +78,9 @@ def check_collision(buahs):
             else:
                 HEALTH += buahs[i].score
             buahs.pop(i)
-            return 0
+            return HEALTH > 0
+    return HEALTH > 0
+            
 
 ###### ANAKNYA #####
 child_image = pygame.image.load('asset/sprites_splitted/child.png').convert_alpha() 
@@ -86,7 +98,7 @@ posisi_buah = [-2,-1,0,1,2]
 while True:
     SCREEN.fill((255, 255, 255))
     if START:
-        check_collision(buah_list)
+        START = check_collision(buah_list)
         location = 0
         clock.tick(FPS) # ensure the event only at FPS setting 
         for event in pygame.event.get(): # get list of event
@@ -116,6 +128,8 @@ while True:
         score_display()
         health_display()
     else:
+        if SCORE > HIGH_SCORE:
+            HIGH_SCORE = SCORE
         for event in pygame.event.get(): # get list of event
             if event.type == pygame.QUIT: 
                 pygame.quit() #quit 
@@ -123,6 +137,7 @@ while True:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     START = True
+                    reset_game()
         init_display()
     pygame.display.update() # update render
 #ini komen
