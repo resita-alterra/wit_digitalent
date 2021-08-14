@@ -101,3 +101,4 @@ while True:
     score_display()
     health_display()
     pygame.display.update() # update render
+#ini komen
