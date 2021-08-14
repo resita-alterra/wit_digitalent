@@ -2,9 +2,10 @@ import pygame,sys,random
 pygame.init()
 pygame.font.init()
 class BuahOrPoison():
-    def __init__(self,the_rect,score) -> None:
+    def __init__(self,the_rect,score,image) -> None:
         self.rect = the_rect
         self.score = score
+        self.pict = image
 # 1 draw screen & init
 
 SCREEN = pygame.display.set_mode((288,512)) # screen size 
@@ -51,18 +52,22 @@ def health_display():
     SCREEN.blit(health_surface,health_rect)
 def create_buah():
     random_pos = random.choice(posisi_buah)
-    random_score = random.choice([-1,1])
+    random_score = random.choice([-1,1,1,1])
+    random_pict = random.choice([0,1,2,3,4])
     if random_score == 1:
-        buah_rect = BuahOrPoison(buah_image.get_rect(topleft = (MIDDLE_SCREEN + (random_pos*CHILD_MEASURE),0)),random_score )
+        image = buah_images[random_pict]
+        
     else:
-        buah_rect = BuahOrPoison(poison_image.get_rect(topleft = (MIDDLE_SCREEN + (random_pos*CHILD_MEASURE),0)),random_score )
+        image = poison_images[random_pict]
+        # buah_rect = BuahOrPoison(poison_images[random_pict].get_rect(topleft = (MIDDLE_SCREEN + (random_pos*CHILD_MEASURE),0)),random_score,random_pict)
+    buah_rect = BuahOrPoison(image.get_rect(topleft = (MIDDLE_SCREEN + (random_pos*CHILD_MEASURE),0)),random_score,image)
     return [buah_rect]
 def draw_buah(buahs):
     for buah in buahs:
         if buah.score == 1:
-            SCREEN.blit(buah_image,buah.rect)
+            SCREEN.blit(buah.pict,buah.rect)
         else:
-            SCREEN.blit(poison_image,buah.rect)
+            SCREEN.blit(buah.pict,buah.rect)
 def move_buah(buahs): 
     for buah in buahs:
         buah.rect.centery += 2
@@ -88,10 +93,10 @@ child_image = pygame.transform.scale(child_image, (CHILD_MEASURE, CHILD_MEASURE)
 child_rect = child_image.get_rect(topleft = (MIDDLE_SCREEN,464))
 
 ########### Buah #########
-buah_image =  pygame.image.load('asset/sprites_splitted/buah.png').convert_alpha() 
-buah_image = pygame.transform.scale(buah_image, (CHILD_MEASURE, CHILD_MEASURE))
-poison_image =  pygame.image.load('asset/sprites_splitted/poison.png').convert_alpha() 
-poison_image = pygame.transform.scale(poison_image, (CHILD_MEASURE, CHILD_MEASURE))
+buah_images = [pygame.image.load('asset/sprites_splitted/food{}.png'.format(i)).convert_alpha() for i in range(5)]
+buah_images = [pygame.transform.scale(i,(CHILD_MEASURE,CHILD_MEASURE)) for i in buah_images]
+poison_images = [pygame.image.load('asset/sprites_splitted/snack{}.png'.format(i)).convert_alpha() for i in range(5)]
+poison_images = [pygame.transform.scale(i,(CHILD_MEASURE,CHILD_MEASURE)) for i in poison_images]
 posisi_buah = [-2,-1,0,1,2]
 
 
