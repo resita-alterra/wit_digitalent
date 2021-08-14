@@ -12,6 +12,7 @@ pygame.display.set_caption("Yuk Makan Sehat") # set window title
 clock = pygame.time.Clock() # used for fps setting
 game_font = pygame.font.SysFont("Arial", 36)
 FPS = 120 # FPS
+START = False
 
 #menambah variabel batas atas
 
@@ -24,6 +25,11 @@ buah_list=[]
 
 SCORE = 0
 HEALTH = 3
+
+def init_display():
+    init_surface = game_font.render("Hello, pencet spasi dong", True,(0,0,0))
+    init_rect = init_surface.get_rect(center = (144,256))
+    SCREEN.blit(init_surface,init_rect)
 
 def score_display():
     score_surface = game_font.render(str(int(SCORE)),True,(0,0,0))
@@ -76,38 +82,47 @@ poison_image =  pygame.image.load('asset/sprites_splitted/poison.png').convert_a
 poison_image = pygame.transform.scale(poison_image, (CHILD_MEASURE, CHILD_MEASURE))
 posisi_buah = [-2,-1,0,1,2]
 
-# buah_list += create_buah()
 
 while True:
-    check_collision(buah_list)
-    location = 0
-    clock.tick(FPS) # ensure the event only at FPS setting 
-    for event in pygame.event.get(): # get list of event
-        # if window close -> 'x' was clicked
-        if event.type == pygame.QUIT: 
-            pygame.quit() #quit 
-            sys.exit() #exit
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                location -= 1
-            if event.key == pygame.K_RIGHT:
-                location += 1
-        if event.type == SPAWNBUAH:
-            buah_list += create_buah()
-    new_x_center = child_rect.centerx + (location*CHILD_MEASURE)
-    # Check apakah new_x_center berada antara 48 dan 240 (inklusif)
-    if new_x_center >= 48 and new_x_center <= 240:
-        # kalau ngga berada di nilai itu, lewatin aja
-        child_rect.centerx += (location*CHILD_MEASURE)
-
-        
-    
-    # Fill the background with white
     SCREEN.fill((255, 255, 255))
-    SCREEN.blit(child_image,child_rect)
-    buah_list = move_buah(buah_list)
-    draw_buah(buah_list)
-    score_display()
-    health_display()
+    if START:
+        check_collision(buah_list)
+        location = 0
+        clock.tick(FPS) # ensure the event only at FPS setting 
+        for event in pygame.event.get(): # get list of event
+            # if window close -> 'x' was clicked
+            if event.type == pygame.QUIT: 
+                pygame.quit() #quit 
+                sys.exit() #exit
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_LEFT:
+                    location -= 1
+                if event.key == pygame.K_RIGHT:
+                    location += 1
+            if event.type == SPAWNBUAH:
+                buah_list += create_buah()
+        new_x_center = child_rect.centerx + (location*CHILD_MEASURE)
+        # Check apakah new_x_center berada antara 48 dan 240 (inklusif)
+        if new_x_center >= 48 and new_x_center <= 240:
+            # kalau ngga berada di nilai itu, lewatin aja
+            child_rect.centerx += (location*CHILD_MEASURE)
+
+            
+        
+        # Fill the background with white
+        SCREEN.blit(child_image,child_rect)
+        buah_list = move_buah(buah_list)
+        draw_buah(buah_list)
+        score_display()
+        health_display()
+    else:
+        for event in pygame.event.get(): # get list of event
+            if event.type == pygame.QUIT: 
+                pygame.quit() #quit 
+                sys.exit() #exit
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    START = True
+        init_display()
     pygame.display.update() # update render
 #ini komen
