@@ -12,6 +12,10 @@ pygame.display.set_caption("Yuk Makan Sehat") # set window title
 clock = pygame.time.Clock() # used for fps setting
 game_font = pygame.font.SysFont("Arial", 36)
 FPS = 120 # FPS
+
+#menambah variabel batas atas
+
+#menambah variabel kiri kanan
 CHILD_MEASURE = 48
 MIDDLE_SCREEN = (288 - CHILD_MEASURE)/2
 SPAWNBUAH = pygame.USEREVENT + 1
@@ -90,7 +94,12 @@ while True:
                 location += 1
         if event.type == SPAWNBUAH:
             buah_list += create_buah()
-    child_rect.centerx += (location*CHILD_MEASURE)
+    new_x_center = child_rect.centerx + (location*CHILD_MEASURE)
+    # Check apakah new_x_center berada antara 48 dan 240 (inklusif)
+    if new_x_center >= 48 and new_x_center <= 240:
+        # kalau ngga berada di nilai itu, lewatin aja
+        child_rect.centerx += (location*CHILD_MEASURE)
+
         
     
     # Fill the background with white
