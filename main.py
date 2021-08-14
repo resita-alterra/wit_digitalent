@@ -1,27 +1,64 @@
 import pygame,sys,random 
 pygame.init()
+pygame.font.init()
+class BuahOrPoison():
+    def __init__(self,the_rect,score) -> None:
+        self.rect = the_rect
+        self.score = score
 # 1 draw screen & init
+
 SCREEN = pygame.display.set_mode((288,512)) # screen size 
 pygame.display.set_caption("Yuk Makan Sehat") # set window title 
 clock = pygame.time.Clock() # used for fps setting
+game_font = pygame.font.SysFont("Arial", 36)
 FPS = 120 # FPS
 CHILD_MEASURE = 48
 MIDDLE_SCREEN = (288 - CHILD_MEASURE)/2
 SPAWNBUAH = pygame.USEREVENT + 1
 pygame.time.set_timer(SPAWNBUAH,500)
 buah_list=[]
+
+SCORE = 0
+HEALTH = 3
+
+def score_display():
+    score_surface = game_font.render(str(int(SCORE)),True,(0,0,0))
+    score_rect = score_surface.get_rect(topleft = (0,0))
+    SCREEN.blit(score_surface,score_rect)
+def health_display():
+    health_surface = game_font.render(str(int(HEALTH)),True,(0,0,255))
+    health_rect = health_surface.get_rect(topright = (288,0))
+    SCREEN.blit(health_surface,health_rect)
 def create_buah():
     random_pos = random.choice(posisi_buah)
-    buah_rect = buah_image.get_rect(topleft = (MIDDLE_SCREEN + (random_pos*CHILD_MEASURE),0)) 
+    random_score = random.choice([-1,1])
+    if random_score == 1:
+        buah_rect = BuahOrPoison(buah_image.get_rect(topleft = (MIDDLE_SCREEN + (random_pos*CHILD_MEASURE),0)),random_score )
+    else:
+        buah_rect = BuahOrPoison(poison_image.get_rect(topleft = (MIDDLE_SCREEN + (random_pos*CHILD_MEASURE),0)),random_score )
     return [buah_rect]
 def draw_buah(buahs):
     for buah in buahs:
-        SCREEN.blit(buah_image,buah)
+        if buah.score == 1:
+            SCREEN.blit(buah_image,buah.rect)
+        else:
+            SCREEN.blit(poison_image,buah.rect)
 def move_buah(buahs): 
     for buah in buahs:
-        buah.centery += 2
-    visible_buah = [buah for buah in buahs if buah.bottom <= 512+CHILD_MEASURE] 
+        buah.rect.centery += 2
+    visible_buah = [buah for buah in buahs if buah.rect.bottom <= 512+CHILD_MEASURE] 
     return visible_buah
+def check_collision(buahs):
+    global SCORE
+    global HEALTH
+    for i in range(len(buahs)):
+        if child_rect.colliderect(buahs[i].rect):
+            if buahs[i].score == 1:
+                SCORE += buahs[i].score
+            else:
+                HEALTH += buahs[i].score
+            buahs.pop(i)
+            return 0
 
 ###### ANAKNYA #####
 child_image = pygame.image.load('asset/sprites_splitted/child.png').convert_alpha() 
@@ -31,10 +68,14 @@ child_rect = child_image.get_rect(topleft = (MIDDLE_SCREEN,464))
 ########### Buah #########
 buah_image =  pygame.image.load('asset/sprites_splitted/buah.png').convert_alpha() 
 buah_image = pygame.transform.scale(buah_image, (CHILD_MEASURE, CHILD_MEASURE))
+poison_image =  pygame.image.load('asset/sprites_splitted/poison.png').convert_alpha() 
+poison_image = pygame.transform.scale(poison_image, (CHILD_MEASURE, CHILD_MEASURE))
 posisi_buah = [-2,-1,0,1,2]
+
 # buah_list += create_buah()
 
 while True:
+    check_collision(buah_list)
     location = 0
     clock.tick(FPS) # ensure the event only at FPS setting 
     for event in pygame.event.get(): # get list of event
@@ -57,4 +98,6 @@ while True:
     SCREEN.blit(child_image,child_rect)
     buah_list = move_buah(buah_list)
     draw_buah(buah_list)
+    score_display()
+    health_display()
     pygame.display.update() # update render
