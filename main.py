@@ -1,4 +1,6 @@
-import pygame,sys,random 
+import pygame,sys,random
+from misc import get_all_fruits,get_all_sweets
+from pprint import pprint
 pygame.init()
 pygame.font.init()
 class BuahOrPoison():
@@ -75,7 +77,7 @@ def health_display():
     SCREEN.blit(health_surface,health_rect)
 def create_buah():
     random_pos = random.choice(posisi_buah)
-    random_score = random.choice([-1,1,1,1])
+    random_score = random.choice([-1,1,1])
     random_pict = random.choice([0,1,2,3,4])
     if random_score == 1:
         image = buah_images[random_pict]
@@ -116,7 +118,7 @@ child_image = pygame.transform.scale(child_image, (CHILD_MEASURE, CHILD_MEASURE)
 child_rect = child_image.get_rect(topleft = (MIDDLE_SCREEN,464))
 
 ########### Buah #########
-buah_images = [pygame.image.load('asset/sprites_splitted/food{}.png'.format(i)).convert_alpha() for i in range(5)]
+buah_images = [pygame.image.load(i) for i in get_all_fruits()]
 buah_images = [pygame.transform.scale(i,(CHILD_MEASURE,CHILD_MEASURE)) for i in buah_images]
 poison_images = [pygame.image.load('asset/sprites_splitted/snack{}.png'.format(i)).convert_alpha() for i in range(5)]
 poison_images = [pygame.transform.scale(i,(CHILD_MEASURE,CHILD_MEASURE)) for i in poison_images]
