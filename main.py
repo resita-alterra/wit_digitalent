@@ -41,7 +41,7 @@ LEVEL_SCORE = 10
 
 # direset tiap game baru
 SCORE = 0
-HEALTH = 4
+HEALTH = 3
 LEVEL = 1
 LEVEL_SPEED = 2
 
@@ -54,7 +54,7 @@ def reset_game():
     global LEVEL
     global LEVEL_SPEED
     SCORE = 0
-    HEALTH = 4
+    HEALTH = 3
     LEVEL = 1
     LEVEL_SPEED = 2
     buah_list = []
@@ -116,7 +116,7 @@ def init_display():
     
 def health_display():
     health_image = pygame.image.load("asset/misc/health{}.png".format(str(HEALTH))).convert_alpha()
-    health_surface = pygame.transform.scale(health_image,(28,28))
+    health_surface = pygame.transform.scale(health_image,(22*3,22))
     health_rect = health_surface.get_rect(topright = (286,6))
 
     SCREEN.blit(health_surface,health_rect)
@@ -233,7 +233,7 @@ while True:
                 pygame.quit() #quit 
                 sys.exit() #exit
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if event.key == pygame.K_RETURN:
                     START = True
                     reset_game()
         init_display()
