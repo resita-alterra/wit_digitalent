@@ -1,5 +1,6 @@
 import os
-asset_path = "/Users/resitasriwahyuni/Documents/Blajar/Digitalent_WIT/makan_buah/asset"
+cwd = os.getcwd()
+asset_path = cwd+"/asset"
 fruit_subpath = "/fruits"
 sweets_subpath = "/sweets"
 # iterate through all file
