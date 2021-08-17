@@ -36,8 +36,13 @@ HEALTH = 3
 def reset_game():
     global SCORE
     global HEALTH
+    global buah_list
+    global child_rect
     SCORE = 0
     HEALTH = 3
+    buah_list = []
+    child_rect.centerx = 144
+
 
 def score_display(start = True, high = False):
     score = HIGH_SCORE if high else SCORE
@@ -84,7 +89,6 @@ def create_buah():
         
     else:
         image = poison_images[random_pict]
-        # buah_rect = BuahOrPoison(poison_images[random_pict].get_rect(topleft = (MIDDLE_SCREEN + (random_pos*CHILD_MEASURE),0)),random_score,random_pict)
     buah_rect = BuahOrPoison(image.get_rect(topleft = (MIDDLE_SCREEN + (random_pos*CHILD_MEASURE),0)),random_score,image)
     return [buah_rect]
 def draw_buah(buahs):
@@ -113,14 +117,14 @@ def check_collision(buahs):
             
 
 ###### ANAKNYA #####
-child_image = pygame.image.load('asset/sprites_splitted/child.png').convert_alpha() 
+child_image = pygame.image.load('asset/player/row-1-column-2.png').convert_alpha() 
 child_image = pygame.transform.scale(child_image, (CHILD_MEASURE, CHILD_MEASURE))
 child_rect = child_image.get_rect(topleft = (MIDDLE_SCREEN,464))
 
 ########### Buah #########
 buah_images = [pygame.image.load(i) for i in get_all_fruits()]
 buah_images = [pygame.transform.scale(i,(CHILD_MEASURE,CHILD_MEASURE)) for i in buah_images]
-poison_images = [pygame.image.load('asset/sprites_splitted/snack{}.png'.format(i)).convert_alpha() for i in range(5)]
+poison_images = [pygame.image.load(i) for i in get_all_sweets()]
 poison_images = [pygame.transform.scale(i,(CHILD_MEASURE,CHILD_MEASURE)) for i in poison_images]
 posisi_buah = [-2,-1,0,1,2]
 
@@ -146,7 +150,7 @@ while True:
                 buah_list += create_buah()
         new_x_center = child_rect.centerx + (location*CHILD_MEASURE)
         # Check apakah new_x_center berada antara 48 dan 240 (inklusif)
-        if new_x_center >= 48 and new_x_center <= 240:
+        if new_x_center >= 24 and new_x_center <= 264:
             # kalau ngga berada di nilai itu, lewatin aja
             child_rect.centerx += (location*CHILD_MEASURE)
 
