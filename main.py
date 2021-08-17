@@ -20,6 +20,11 @@ bg_surface = pygame.transform.scale(bg_surface,(288,512))
 FPS = 120 # FPS
 START = False
 
+# SOUNDS 
+point_sound = pygame.mixer.Sound('asset/sound/power-up.mp3')
+level_sound = pygame.mixer.Sound('asset/sound/get_point.mp3')
+health_sound = pygame.mixer.Sound('asset/sound/lose_health.mp3')
+over_sound = pygame.mixer.Sound('asset/sound/game_over.mp3')
 # COLORS
 BLUE = (15, 50, 138)
 
@@ -155,13 +160,18 @@ def check_collision(buahs):
     for i in range(len(buahs)):
         if child_rect.colliderect(buahs[i].rect):
             if buahs[i].score == 1:
+                point_sound.play()
                 SCORE += buahs[i].score
             else:
+                health_sound.play()
                 HEALTH += buahs[i].score
             buahs.pop(i)
             if SCORE >= LEVEL * LEVEL_SCORE:
+                level_sound.play()
                 LEVEL +=1
-                LEVEL_SPEED += ACCEL 
+                LEVEL_SPEED += ACCEL
+            if HEALTH<= 0:
+                over_sound.play() 
             return HEALTH > 0
     return HEALTH > 0
             
